@@ -22,29 +22,22 @@ RUN yum install -y \
     zlib-devel \
     zstd
 
-# Download, build, and install RocksDB
-RUN cd /usr/local/src && \
-    git clone https://github.com/facebook/rocksdb.git && \
-    cd rocksdb && \
-    export DEBUG_LEVEL=0 && \
-    make clean static_lib install-shared
-
 # Download and install the Java Runtime, then set JAVA_HOME
 RUN yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
 ENV JAVA_HOME /usr/lib/jvm/java-1.8.0
 
-# Build and install the RocksDB Java Bindings
-RUN cd /usr/local/src/rocksdb && \
+# Download, build, and install RocksDB and the Java bindings
+RUN cd /usr/local/src && \
+    git clone https://github.com/facebook/rocksdb.git && \
+    cd rocksdb && \
     export DEBUG_LEVEL=0 && \
+    make clean static_lib install-shared && \
     make jclean rocksdbjava && \
     cp java/target/rocksdbjni-*.jar /usr/lib/java && \
-    cp java/target/librocksdbjni-*.so /usr/local/lib64
-# Create a more simply named link for the bindings to make
-# java classpath building a little easier
-RUN cd /usr/lib/java && ln -s rocksdbjni-*.jar rocksdbjni.jar
-
-# Remove the installation directory once install is complete
-RUN rm -rf /usr/local/src/rocksdb
+    cp java/target/librocksdbjni-*.so /usr/local/lib64 && \
+    cd /usr/lib/java && \
+    ln -s rocksdbjni-*.jar rocksdbjni.jar && \
+    rm -rf /usr/local/src/rocksdb
 
 # Mount the run script
 COPY scripts/docker-entrypoint.sh /
