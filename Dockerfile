@@ -43,6 +43,9 @@ RUN cd /usr/local/src/rocksdb && \
 # java classpath building a little easier
 RUN cd /usr/lib/java && ln -s rocksdbjni-*.jar rocksdbjni.jar
 
+# Remove the installation directory once install is complete
+RUN rm -rf /usr/local/src/rocksdb
+
 # Mount the run script
 COPY scripts/docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
