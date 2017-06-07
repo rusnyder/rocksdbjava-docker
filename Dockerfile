@@ -47,8 +47,6 @@ RUN cd /usr/lib/java && ln -s rocksdbjni-*.jar rocksdbjni.jar
 COPY scripts/docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
 
-# Default to executing a java command with the RocksDB java bindings
-# on the classpath.  Note that the CLASSPATH env var should be used
-# to add more resources to the classpath instead of an additional
-# "-classpath" flag, since the latter will override the existing classpath
+# Default to intercepting any java command and injecting the RocksDB 
+# java bindings jar into the classpath.
 ENTRYPOINT ["/docker-entrypoint.sh"]
