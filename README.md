@@ -2,7 +2,7 @@
 
 Dockerfile for [RocksJava](https://github.com/facebook/rocksdb/wiki/RocksJava-Basics), the RocksDB Java bindings
 
-The image is available on [Docker Hub](https://github.com/facebook/rocksdb/wiki/RocksJava-Basics)
+The image is available on [Docker Hub](https://hub.docker.com/r/rusnyder/rocksdbjava/)
 
 
 ## Supported Docker Versions
