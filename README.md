@@ -17,7 +17,10 @@ The images have been tested on Docker 17.03.1-ce.
 If you have your java binaries built by something else, you can run your program in a JVM that contains RocksDB JNI bindings by invoking any java command directly:
 
 ```bash
-docker run -v $(pwd)/my-jar.jar:/usr/lib/java/my-jar.jar rusnyder/rocksdbjava java -cp /usr/lib/java/my-jar.jar com.example.Main
+docker run \
+  -v $(pwd)/my-jar.jar:/usr/lib/java/my-jar.jar \
+  rusnyder/rocksdbjava \
+  java -cp /usr/lib/java/my-jar.jar com.example.Main
 ```
 
 ### Dockerfile

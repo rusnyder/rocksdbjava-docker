@@ -7,7 +7,7 @@ FROM centos:7
 RUN yum install -y epel-release && yum clean all && yum update -y
 
 # Install build tools
-RUN yum clean all && yum install -y \
+RUN yum install -y \
     bzip2 \
     bzip2-devel \
     gcc-c++ \
