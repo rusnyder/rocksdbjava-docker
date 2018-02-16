@@ -1,9 +1,13 @@
 # RocksDB with Java bindings on CentOS 7
 
-# Build from CentOS 7
-FROM centos:7
+# #####################################
+#                BUILD                #
+# #####################################
+FROM centos:7 as builder
 
-# Install EPEL, updates, and dependences
+ARG ROCKSDB_VERSION=5.9.2
+
+# Install dependencies
 RUN rm -rf /var/cache/yum \
  && yum install -y epel-release \
  && yum update -y \
@@ -23,23 +27,40 @@ RUN rm -rf /var/cache/yum \
     zlib \
     zlib-devel \
     zstd \
- && yum clean all
+ && rm -rf /var/cache/yum
 
 # Download, build, and install RocksDB and the Java bindings
 ENV JAVA_HOME /usr/lib/jvm/java-1.8.0
-RUN cd /usr/local/src && \
-    git clone https://github.com/facebook/rocksdb.git && \
-    cd rocksdb && \
-    export DEBUG_LEVEL=0 && \
-    make clean static_lib install-shared && \
-    make jclean rocksdbjava && \
-    cp java/target/rocksdbjni-*.jar /usr/lib/java && \
-    cp java/target/librocksdbjni-*.so /usr/local/lib64 && \
-    cd /usr/lib/java && \
-    ln -s rocksdbjni-*.jar rocksdbjni.jar && \
-    rm -rf /usr/local/src/rocksdb
+WORKDIR /usr/local/src/rocksdb
+RUN git clone --branch "v${ROCKSDB_VERSION}" \
+      --depth 1 https://github.com/facebook/rocksdb.git . \
+ && export DEBUG_LEVEL=0 \
+ && export INSTALL_PATH=/build/usr/local \
+ && make clean static_lib install-shared \
+ && make jclean rocksdbjava \
+ && cd java/target \
+ && ln -s rocksdbjni-*.jar rocksdbjni.jar \
+ && cp rocksdbjni-*.jar /build/usr/lib/java/ \
+ && cp librocksdbjni-*.so /build/usr/local/lib64/ \
+ && cd / && rm -rf /usr/local/src/rocksdb
 
-# Mount the run script
+# #####################################
+#                 RUN                 #
+# #####################################
+FROM centos:7
+RUN rm -rf /var/cache/yum \
+ && yum install -y epel-release \
+ && yum update -y \
+ && yum install -y \
+    bzip2 \
+    java-1.8.0-openjdk \
+    snappy \
+    which \
+    zlib \
+    zstd \
+ && rm -rf /var/cache/yum
+WORKDIR /usr/lib/java
+COPY --from=builder /build/ /
 COPY scripts/docker-entrypoint.sh /
 
 # Default to intercepting any java command and injecting the RocksDB 

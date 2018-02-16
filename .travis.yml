@@ -1,0 +1,21 @@
+---
+sudo: required
+
+language: java
+
+services:
+  - docker
+
+script:
+  - docker build -t rusnyder/rocksdbjava .
+  - docker run -it $(gradle -q copyTestLibs printDockerFlags) rusnyder/rocksdbjava java org.junit.runner.JUnitCore RocksDBTest
+
+# A peculiarity of dependency caching in Gradle means that to avoid uploading the cache
+# after every build, we have to include the following cache configuration
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/

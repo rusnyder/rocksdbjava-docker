@@ -1,0 +1,41 @@
+apply plugin: 'java'
+
+repositories {
+  mavenCentral()
+}
+
+def rocksdbVersion = System.getenv('ROCKSDB_VERSION') ?: "5.9.2"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+  testCompile "junit:junit:4.12"
+  testCompile "org.rocksdb:rocksdbjni:${rocksdbVersion}"
+  testCompile "com.google.guava:guava:24.0-jre"
+  testCompile "org.assertj:assertj-core:3.9.0"
+}
+
+def testLibDir = "${buildDir}/test-output/lib"
+task copyTestLibs(type: Copy) {
+  delete testLibDir
+  into testLibDir
+  from configurations.testRuntime.filter { ! it.toString().contains("rocksdb") }
+}
+
+def dockerBaseDir = "/rocksdbtest"
+def dockerLibDir = "${dockerBaseDir}/lib"
+def dockerTestDir="${dockerBaseDir}/src"
+task printDockerFlags {
+  doLast {
+    // Add tests dependencies to the container and the classpath
+    print " --volume ${testLibDir}/:${dockerLibDir}/"
+
+    // Mount the compiled test sources directory and set it to the working directory
+    print " --volume ${buildDir}/classes/java/test/:${dockerTestDir}/"
+    print " --workdir ${dockerTestDir}"
+
+    // Finally, set the classpath to include test libs and sources
+    print " --env CLASSPATH='${dockerLibDir}/*.jar:.'"
+  }
+}

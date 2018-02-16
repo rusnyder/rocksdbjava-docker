@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+
+# Trigger the MicroBadger to analyze the new image
+curl -XPOST "https://hooks.microbadger.com/images/rusnyder/rocksdbjava/2Q15b5PMBZdxzHYaoBtl8hK06Aw="

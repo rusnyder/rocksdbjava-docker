@@ -3,13 +3,32 @@
 # Docker entrypoint script for rocksdbjava Docker container
 # Based off of init scripts from the JPackage Project <http://www.jpackage.org/>
 
+# Fail if any command in a pipeline fails
+set -o pipefail
+
 # Source functions library
 _prefer_jre="true"
 . /usr/share/java-utils/java-functions
 
+# Helper functions
+function join_by() {
+  local IFS="$1"
+  shift
+  echo "$*"
+} # join_by
+
 # Expand classpath parameter
 if [[ -n "${CLASSPATH}" ]]; then
-  CLASSPATH="$(ls $CLASSPATH | paste -sd:)"
+  NEW_CP=""
+  IFS=':' read -ra CP <<< "$CLASSPATH"
+  for i in "${CP[@]}"; do
+    if EXPANDED=($i); then
+      NEW_CP="$NEW_CP:$(join_by ':' ${EXPANDED[@]})"
+    else
+      NEW_CP="$NEW_CP:$i"
+    fi
+  done
+  CLASSPATH="$NEW_CP"
 fi
 
 # Configuration
