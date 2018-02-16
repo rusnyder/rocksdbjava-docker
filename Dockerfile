@@ -7,7 +7,7 @@ FROM centos:7 as builder
 
 ARG ROCKSDB_VERSION=5.9.2
 
-# Install dependencies
+# Install build dependencies
 RUN rm -rf /var/cache/yum \
  && yum install -y epel-release \
  && yum update -y \
@@ -48,6 +48,8 @@ RUN git clone --branch "v${ROCKSDB_VERSION}" \
 #                 RUN                 #
 # #####################################
 FROM centos:7
+
+# Install runtime dependencies
 RUN rm -rf /var/cache/yum \
  && yum install -y epel-release \
  && yum update -y \
@@ -59,6 +61,8 @@ RUN rm -rf /var/cache/yum \
     zlib \
     zstd \
  && rm -rf /var/cache/yum
+
+# Copy build output and startup script
 WORKDIR /usr/lib/java
 COPY --from=builder /build/ /
 COPY scripts/docker-entrypoint.sh /
