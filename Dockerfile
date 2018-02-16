@@ -3,16 +3,17 @@
 # Build from CentOS 7
 FROM centos:7
 
-# Install EPEL and update all to latest
-RUN yum install -y epel-release && yum clean all && yum update -y
-
-# Install build tools
-RUN yum install -y \
+# Install EPEL, updates, and dependences
+RUN yum install -y epel-release \
+ && yum update -y \
+ && yum install -y \
     bzip2 \
     bzip2-devel \
     gcc-c++ \
     gflags \
     git \
+    java-1.8.0-openjdk \
+    java-1.8.0-openjdk-devel \
     libzstd \
     make \
     snappy \
@@ -20,13 +21,11 @@ RUN yum install -y \
     which \
     zlib \
     zlib-devel \
-    zstd
-
-# Download and install the Java Runtime, then set JAVA_HOME
-RUN yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
-ENV JAVA_HOME /usr/lib/jvm/java-1.8.0
+    zstd \
+ && yum clean all
 
 # Download, build, and install RocksDB and the Java bindings
+ENV JAVA_HOME /usr/lib/jvm/java-1.8.0
 RUN cd /usr/local/src && \
     git clone https://github.com/facebook/rocksdb.git && \
     cd rocksdb && \
@@ -41,7 +40,6 @@ RUN cd /usr/local/src && \
 
 # Mount the run script
 COPY scripts/docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
 
 # Default to intercepting any java command and injecting the RocksDB 
 # java bindings jar into the classpath.

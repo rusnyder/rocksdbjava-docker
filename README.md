@@ -1,10 +1,14 @@
 # rocksdbjava-docker
 
-[![Docker Stats](http://dockeri.co/image/rusnyder/rocksdbjava)](https://hub.docker.com/r/rusnyder/rocksdbjava/)
+[![Docker Build Status](https://img.shields.io/docker/build/rusnyder/rocksdbjava.svg)][dockerhub]
+[![Docker Image Stats](https://images.microbadger.com/badges/image/rusnyder/rocksdbjava.svg)](https://microbadger.com/images/rusnyder/rocksdbjava)
+[![Docker Pulls](https://img.shields.io/docker/pulls/rusnyder/rocksdbjava.svg)][dockerhub]
 
 Dockerfile for [RocksJava](https://github.com/facebook/rocksdb/wiki/RocksJava-Basics), the [RocksDB](http://rocksdb.org/) Java bindings
 
-The image is available on [Docker Hub](https://hub.docker.com/r/rusnyder/rocksdbjava/)
+The image is available on [Docker Hub][dockerhub]
+
+[dockerhub]: https://hub.docker.com/r/rusnyder/rocksdbjava/
 
 
 ## Supported Docker Versions
