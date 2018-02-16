@@ -4,7 +4,8 @@
 FROM centos:7
 
 # Install EPEL, updates, and dependences
-RUN yum install -y epel-release \
+RUN rm -rf /var/cache/yum \
+ && yum install -y epel-release \
  && yum update -y \
  && yum install -y \
     bzip2 \
