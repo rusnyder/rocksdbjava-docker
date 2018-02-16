@@ -40,8 +40,8 @@ RUN git clone --branch "v${ROCKSDB_VERSION}" \
  && make jclean rocksdbjava \
  && cd java/target \
  && ln -s rocksdbjni-*.jar rocksdbjni.jar \
- && cp rocksdbjni-*.jar /build/usr/lib/java/ \
- && cp librocksdbjni-*.so /build/usr/local/lib64/ \
+ && mkdir -p /build/usr/lib/java/ && cp rocksdbjni-*.jar /build/usr/lib/java/ \
+ && mkdir -p /build/usr/local/lib64/ && cp librocksdbjni-*.so /build/usr/local/lib64/ \
  && cd / && rm -rf /usr/local/src/rocksdb
 
 # #####################################
