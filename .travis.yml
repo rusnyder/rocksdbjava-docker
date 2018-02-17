@@ -8,7 +8,7 @@ services:
 
 script:
   - docker build -t rusnyder/rocksdbjava .
-  - docker run -it $(gradle -q copyTestLibs printDockerFlags) rusnyder/rocksdbjava java org.junit.runner.JUnitCore RocksDBTest
+  - docker run -it $(gradle -p test -q copyTestLibs printDockerFlags) rusnyder/rocksdbjava java org.junit.runner.JUnitCore RocksDBTest
 
 # A peculiarity of dependency caching in Gradle means that to avoid uploading the cache
 # after every build, we have to include the following cache configuration
